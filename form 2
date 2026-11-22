@@ -1,0 +1,98 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Bai_4
+{
+    public partial class Form2 : Form
+    {
+        public string Maphieu;
+        public string Tendocgia;
+        public string Tensach;
+        public DateTime Ngaymuon;
+        public Form2(string Maphieu, string Tendocgia, string Tensach, DateTime Ngaymuon)
+        {
+            InitializeComponent();
+            textBox1.Text = Maphieu;
+            textBox2.Text = Tendocgia;
+            textBox3.Text = Tensach;
+            textBox4.Text = "";
+        }
+
+        public string chuanhoa(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return string.Empty;
+            string[] words = input.Trim().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < words.Length; i++)
+            {
+                string word = words[i];
+                if (!string.IsNullOrEmpty(word))
+                {
+                    word = char.ToUpper(word[0]) + word.Substring(1).ToLower();
+                    words[i] = word;
+                }
+            }
+            return string.Join(" ", words);
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+            string[] s = textBox4.Text.Split('/');
+
+            if (s.Length != 3 || s[0].Length == 0 ||
+                s[1].Length == 0 || s[2].Length != 4)
+            {
+                errorProvider1.SetError(textBox4, "Loi ngay thang");
+                return;
+            }
+
+            int ngay = int.Parse(s[0]);
+            int thang = int.Parse(s[1]);
+            int nam = int.Parse(s[2]);
+
+            if (ngay < 1 || ngay > 31 ||
+                thang < 1 || thang > 12 || nam < 1)
+            {
+                errorProvider1.SetError(textBox4, "Ngay thang khong hop le");
+                return;
+            }
+
+            DateTime ngayMuon = new DateTime(nam, thang, ngay);
+
+            if (ngayMuon > DateTime.Now)
+            {
+                errorProvider1.SetError(textBox4, "Ngay muon khong duoc lon hon hien tai");
+                return;
+            }
+
+            errorProvider1.SetError(textBox4, "");
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (textBox1.Text == null|| textBox2.Text == null|| textBox3.Text == null|| textBox4.Text == null) 
+                MessageBox.Show("Vui long nhap du thong tin");
+
+            Maphieu= chuanhoa(textBox1.Text);
+            Tendocgia = chuanhoa(textBox2.Text);
+            Tensach = chuanhoa(textBox3.Text);
+            string[] s = textBox4.Text.Split('/');
+
+            Ngaymuon = new DateTime(
+                int.Parse(s[2]),
+                int.Parse(s[1]),
+                int.Parse(s[0])
+            );
+
+            this.DialogResult = DialogResult.OK;
+            MessageBox.Show("Tao phieu muon thanh cong");
+            this.Close();
+        }
+    }
+}
