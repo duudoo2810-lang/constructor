@@ -1,0 +1,79 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Bai_4
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+            
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Form2 f = new Form2("", "", "", DateTime.MinValue);
+
+            if (f.ShowDialog() == DialogResult.OK)
+            {
+                ListViewItem item = new ListViewItem(f.Maphieu);
+                item.SubItems.Add(f.Tendocgia);
+                item.SubItems.Add(f.Tensach);
+                item.SubItems.Add(f.Ngaymuon.ToString("dd/MM/yyyy"));
+                item.SubItems.Add("Chưa trả");
+
+                listView1.Items.Add(item); 
+
+            }
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listView1_DoubleClick(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count == 0)
+                return;
+            ListViewItem item = listView1.SelectedItems[0];
+
+            if (item.SubItems[4].Text == "Đã trả")
+            {
+                MessageBox.Show("Phiếu này đã trả sách!");
+                return;
+            }
+
+            Form3 f = new Form3(
+                item.SubItems[0].Text,
+                item.SubItems[1].Text,
+                item.SubItems[2].Text,
+                DateTime.ParseExact(
+                    item.SubItems[3].Text,
+                    "dd/MM/yyyy",
+                    null
+                )
+            );
+            if (f.ShowDialog() == DialogResult.OK)
+            {
+                item.SubItems[4].Text = "Đã trả";
+                item.SubItems[4].ForeColor = Color.Green;
+
+                MessageBox.Show("Xác nhận trả sách thành công!");
+            }
+        }
+    }
+}
